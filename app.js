@@ -365,6 +365,114 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+// ── Condition Distribution Chart ──────────────────────────────────────────
+
+const CHART_COLORS = [
+  '#2563eb','#16a34a','#ea580c','#dc2626',
+  '#8b5cf6','#0891b2','#d97706','#db2777',
+  '#65a30d','#6366f1',
+];
+
+function buildConditionData() {
+  const counts = {};
+  patients.forEach(p => {
+    counts[p.condition] = (counts[p.condition] || 0) + 1;
+  });
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1]);
+}
+
+function renderConditionChart() {
+  const canvas = document.getElementById('conditionChart');
+  if (!canvas) return;
+
+  // Fit canvas pixels to its CSS size
+  const wrap = canvas.parentElement;
+  canvas.width  = wrap.clientWidth  || 600;
+  canvas.height = wrap.clientHeight || 260;
+
+  const ctx   = canvas.getContext('2d');
+  const data  = buildConditionData();
+  const max   = data[0][1];
+  const W     = canvas.width;
+  const H     = canvas.height;
+  const PAD   = { top: 16, right: 20, bottom: 36, left: 130 };
+  const barH  = Math.min(28, (H - PAD.top - PAD.bottom) / data.length - 6);
+  const gap   = (H - PAD.top - PAD.bottom - barH * data.length) / (data.length + 1);
+  const chartW = W - PAD.left - PAD.right;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines & x-axis ticks
+  const ticks = max <= 3 ? max : 4;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth   = 1;
+  ctx.fillStyle   = '#94a3b8';
+  ctx.font        = '11px -apple-system, sans-serif';
+  ctx.textAlign   = 'center';
+
+  for (let i = 0; i <= ticks; i++) {
+    const x = PAD.left + (chartW / ticks) * i;
+    ctx.beginPath();
+    ctx.moveTo(x, PAD.top);
+    ctx.lineTo(x, H - PAD.bottom);
+    ctx.stroke();
+    ctx.fillText(Math.round((max / ticks) * i), x, H - PAD.bottom + 14);
+  }
+
+  // Bars
+  data.forEach(([condition, count], i) => {
+    const color = CHART_COLORS[i % CHART_COLORS.length];
+    const y     = PAD.top + gap * (i + 1) + barH * i;
+    const w     = (count / max) * chartW;
+
+    // Bar background track
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath();
+    ctx.roundRect(PAD.left, y, chartW, barH, 4);
+    ctx.fill();
+
+    // Filled bar
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(PAD.left, y, w, barH, 4);
+    ctx.fill();
+
+    // Label (condition name)
+    ctx.fillStyle = '#0f172a';
+    ctx.textAlign = 'right';
+    ctx.font      = '12px -apple-system, sans-serif';
+    ctx.fillText(condition, PAD.left - 8, y + barH / 2 + 4);
+
+    // Count badge at bar end
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.font      = 'bold 11px -apple-system, sans-serif';
+    ctx.fillText(count, PAD.left + w + 6, y + barH / 2 + 4);
+  });
+
+  // Axis line
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth   = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(PAD.left, PAD.top);
+  ctx.lineTo(PAD.left, H - PAD.bottom);
+  ctx.stroke();
+
+  // Legend
+  const legendEl = document.getElementById('chartLegend');
+  if (legendEl) {
+    legendEl.innerHTML = data.map(([condition], i) => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${CHART_COLORS[i % CHART_COLORS.length]}"></div>
+        ${condition}
+      </div>`).join('');
+  }
+}
+
+// Re-draw on window resize so the chart stays crisp
+window.addEventListener('resize', renderConditionChart);
+
 // ── Init ──────────────────────────────────────────────────────────────────
 
 renderDashAppts();
@@ -373,3 +481,4 @@ renderMetrics();
 renderPatients(patients);
 renderAppointments(appointments);
 renderRecords();
+renderConditionChart();
