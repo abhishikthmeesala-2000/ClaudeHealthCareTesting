@@ -1,0 +1,75 @@
+{
+  "client": {
+    "name": "Medicare",
+    "engagement": "Harness Review "
+  },
+  "review": {
+    "confidenceThreshold": 0.6,
+    "severityThreshold": "low",
+    "requireVerifierApproval": true
+  },
+  "agents": {
+    "enabled": [
+      "reviewer",
+      "security",
+      "domain-policy",
+      "testing",
+      "data-architecture",
+      "sre-observability",
+      "design-principles",
+      "pr-intent-gap",
+      "remediation"
+    ]
+  },
+  "models": {
+    "reviewer": "anthropic",
+    "security": "anthropic",
+    "domain-policy": "anthropic",
+    "testing": "anthropic",
+    "data-architecture": "anthropic",
+    "sre-observability": "anthropic",
+    "design-principles": "anthropic",
+    "pr-intent-gap": "anthropic",
+    "remediation": "anthropic"
+  },
+  "providers": {
+    "mock": {},
+    "anthropic": {
+      "model": "claude-haiku-4-5-20251001"
+    }
+  },
+  "context": {
+    "ignoredPaths": [
+      "**/*.lock",
+      "**/*.lockb",
+      "**/.engagement-harness/**",
+      "**/.next/**",
+      "**/build/**",
+      "**/coverage/**",
+      "**/dist/**",
+      "**/node_modules/**"
+    ],
+    "maxFiles": 30,
+    "maxTokens": 80000
+  },
+  "ci": {
+    "blockOnPolicy": false,
+    "postComments": true,
+    "artifactsOnly": true
+  },
+  "alm": {
+    "platform": "github"
+  },
+  "feedback": {
+    "enabled": true,
+    "autoCollect": true
+  },
+  "reports": {
+    "formats": [
+      "json",
+      "markdown",
+      "html"
+    ],
+    "outputDir": ".engagement-harness/reports"
+  }
+}
