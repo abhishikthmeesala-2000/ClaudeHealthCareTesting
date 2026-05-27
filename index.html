@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthCare Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚕</span>
+      <span class="logo-text">MediCare</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">▦</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="patients">
+        <span class="nav-icon">👤</span> Patients
+      </a>
+      <a href="#" class="nav-item" data-page="appointments">
+        <span class="nav-icon">📅</span> Appointments
+      </a>
+      <a href="#" class="nav-item" data-page="records">
+        <span class="nav-icon">📋</span> Records
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <span class="nav-icon">⚙</span> Settings
+      </a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">DR</div>
+      <div class="user-info">
+        <div class="user-name">Dr. Reynolds</div>
+        <div class="user-role">General Physician</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="search-bar">
+          <input type="text" id="globalSearch" placeholder="Search patients, records…" />
+          <span class="search-icon">🔍</span>
+        </div>
+        <div class="notif-btn" title="Notifications">
+          🔔 <span class="notif-badge" id="notifBadge">3</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <div class="content">
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <section class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-icon">👤</div>
+            <div class="stat-body">
+              <div class="stat-value" id="statPatients">248</div>
+              <div class="stat-label">Total Patients</div>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">📅</div>
+            <div class="stat-body">
+              <div class="stat-value" id="statToday">12</div>
+              <div class="stat-label">Today's Appointments</div>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-body">
+              <div class="stat-value" id="statPending">5</div>
+              <div class="stat-label">Pending Results</div>
+            </div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon">🚨</div>
+            <div class="stat-body">
+              <div class="stat-value" id="statCritical">2</div>
+              <div class="stat-label">Critical Alerts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Upcoming Appointments -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Upcoming Appointments</h2>
+              <button class="btn-link" data-page="appointments">View all →</button>
+            </div>
+            <div class="appt-list" id="dashApptList"></div>
+          </div>
+
+          <!-- Recent Patients -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Recent Patients</h2>
+              <button class="btn-link" data-page="patients">View all →</button>
+            </div>
+            <div class="recent-patients" id="dashRecentPatients"></div>
+          </div>
+        </div>
+
+        <!-- Health Metrics -->
+        <div class="card metrics-card">
+          <div class="card-header">
+            <h2>Patient Health Overview</h2>
+          </div>
+          <div class="metrics-grid" id="metricsGrid"></div>
+        </div>
+      </section>
+
+      <!-- ── PATIENTS PAGE ── -->
+      <section class="page" id="page-patients">
+        <div class="page-actions">
+          <input type="text" id="patientSearch" placeholder="Search by name, ID, or condition…" class="search-input" />
+          <button class="btn-primary" id="addPatientBtn">+ Add Patient</button>
+        </div>
+        <div class="card">
+          <table class="data-table" id="patientTable">
+            <thead>
+              <tr>
+                <th>ID</th><th>Name</th><th>Age</th><th>Gender</th>
+                <th>Condition</th><th>Last Visit</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patientTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── APPOINTMENTS PAGE ── -->
+      <section class="page" id="page-appointments">
+        <div class="page-actions">
+          <input type="text" id="apptSearch" placeholder="Search appointments…" class="search-input" />
+          <button class="btn-primary" id="addApptBtn">+ Schedule Appointment</button>
+        </div>
+        <div class="card">
+          <table class="data-table" id="apptTable">
+            <thead>
+              <tr>
+                <th>Time</th><th>Patient</th><th>Doctor</th>
+                <th>Type</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="apptTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── RECORDS PAGE ── -->
+      <section class="page" id="page-records">
+        <div class="card">
+          <div class="card-header"><h2>Medical Records</h2></div>
+          <div class="records-grid" id="recordsGrid"></div>
+        </div>
+      </section>
+
+      <!-- ── SETTINGS PAGE ── -->
+      <section class="page" id="page-settings">
+        <div class="settings-layout">
+          <div class="card">
+            <div class="card-header"><h2>Profile Settings</h2></div>
+            <form class="settings-form" id="settingsForm">
+              <div class="form-row">
+                <label>Full Name</label>
+                <input type="text" value="Dr. Sarah Reynolds" />
+              </div>
+              <div class="form-row">
+                <label>Email</label>
+                <input type="email" value="s.reynolds@medicare.com" />
+              </div>
+              <div class="form-row">
+                <label>Specialty</label>
+                <select>
+                  <option>General Physician</option>
+                  <option>Cardiologist</option>
+                  <option>Neurologist</option>
+                  <option>Pediatrician</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>Notifications</label>
+                <label class="toggle">
+                  <input type="checkbox" checked />
+                  <span class="toggle-slider"></span>
+                  Enable email alerts
+                </label>
+              </div>
+              <button type="button" class="btn-primary" onclick="showToast('Settings saved successfully')">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Patient</h3>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
